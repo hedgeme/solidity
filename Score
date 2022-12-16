@@ -17,10 +17,10 @@ contract Score {
     }
 
     modifier onlyOwner {
-        if (msg.sender == owner) {
+        require ((msg.sender == owner), "Ownable: caller is not the owner"); 
              _;
         }
-    }
+
 
     ScoreBoard[] table;
 
