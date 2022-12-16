@@ -14,4 +14,14 @@ contract Owned {
     modifier onlyOwner {
         if (msg.sender == owner) 
              _;
-     
+        }
+      
+/////
+
+    function getOwner() public onlyOwner view returns (address) {
+    return owner;
+    }
+    
+}
+
+
