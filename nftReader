@@ -1,0 +1,34 @@
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity >0.7.6 <0.8.4;
+
+contract nftReader{
+
+   constructor() {
+        owner = msg.sender;
+        rewardsBalance[msg.sender]=1000;
+    }
+
+    address owner;
+
+
+    mapping (address => uint256) public rewardsBalance;
+    mapping (address => uint256) private nftContractOwner;
+    mapping (address => uint256) private tokenIdOwner;
+
+    struct Rewards {
+        address _owner;
+        uint256 _rewards;
+    }
+
+    Rewards[] rewards;
+
+    
+    function balanceOf(address _owner) public view returns (uint256) {    
+        return rewardsBalance[_owner];
+        }
+   
+    function addRewards(address _owner, uint256 _rewards) public payable{
+        rewardsBalance[msg.sender] = rewardsBalance[msg.sender] - _rewards;
+        rewardsBalance[_owner] = rewardsBalance[_owner] + _rewards;
+    }
+}
