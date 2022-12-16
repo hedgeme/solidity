@@ -1,0 +1,60 @@
+// SPDX-License-Identifier: GPL-3.0
+pragma solidity ^0.8.3;
+
+import "@openzeppelin/contracts/access/Ownable.sol";
+
+contract VolcanoCoin is Ownable{
+
+    constructor() {
+          balances[msg.sender]=totalSupply;
+     }
+    
+    mapping(address => uint256) public balances;
+    mapping(address => Payment[]) TransferMap;  //mapping for struct
+
+    uint256 totalSupply = 10000;
+
+    event supplyChange (uint256, address); 
+    event transferDone (uint256, address);
+
+    struct Payment {
+        address userAddress;
+        uint256 transferAmt;
+    }
+
+
+/////
+
+    function getSupply() public view returns (uint256) {
+        return totalSupply;
+    }
+
+    function addSupply() public onlyOwner {
+        totalSupply = totalSupply+1000;
+        emit supplyChange (totalSupply, msg.sender);  
+    }
+
+    function transfer(address recipient, uint256 amt) public {
+        balances[msg.sender] = balances[msg.sender] - amt;
+        balances[recipient] = balances[recipient] + amt;
+        emit transferDone(amt, recipient); 
+        
+        TransferMap[recipient].push(Payment(recipient, amt));
+
+        recordPayment(msg.sender,recipient,amt);
+    }
+
+    function getUserTransfers(address recipient) public view returns(Payment[] memory){
+        return TransferMap[recipient];
+    }
+
+    function recordPayment (address _sender, address _recipient, uint256 _amt) private {
+        TransferMap[_sender].push(Payment({userAddress:_recipient,transferAmt:_amt}));
+    }
+
+}
+
+    
+
+
+
